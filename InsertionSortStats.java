@@ -1,8 +1,8 @@
-package Atividade02;
+
 
 import java.util.Random;
 
-public class InsertionSortStats {
+public class InsertionSortCompleto {
 
     public static void insertionSort(int[] array) {
         for (int i = 1; i < array.length; i++) {
@@ -25,6 +25,14 @@ public class InsertionSortStats {
         return vetor;
     }
 
+    public static int[] gerarVetorInversamenteOrdenado(int tamanho) {
+        int[] vetor = new int[tamanho];
+        for (int i = 0; i < tamanho; i++) {
+            vetor[i] = tamanho - i;
+        }
+        return vetor;
+    }
+
     public static double calcularMedia(long[] tempos) {
         long soma = 0;
         for (long tempo : tempos) {
@@ -41,30 +49,34 @@ public class InsertionSortStats {
         return Math.sqrt(soma / tempos.length);
     }
 
-    public static void testarComTamanho(int tamanho, int repeticoes) {
+    public static void testarCenario(String tipoEntrada, int tamanho, int repeticoes) {
         long[] tempos = new long[repeticoes];
 
-        System.out.printf("\n⏱️ Iniciando testes para vetor de %d elementos:\n", tamanho);
+        System.out.printf("\n🔎 Testando Insertion Sort - Entrada: %s | Tamanho: %d\n", tipoEntrada, tamanho);
 
         for (int i = 0; i < repeticoes; i++) {
-            int[] vetor = gerarVetorAleatorio(tamanho);
+            int[] vetor;
+
+            if (tipoEntrada.equals("aleatória")) {
+                vetor = gerarVetorAleatorio(tamanho);
+            } else if (tipoEntrada.equals("inversa")) {
+                vetor = gerarVetorInversamenteOrdenado(tamanho);
+            } else {
+                throw new IllegalArgumentException("Tipo de entrada inválido.");
+            }
+
             long inicio = System.currentTimeMillis();
-
             insertionSort(vetor);
-
             long fim = System.currentTimeMillis();
-            tempos[i] = fim - inicio;
 
-            double tempoSegundos = tempos[i] / 1000.0;
-            System.out.printf("Execução %2d: %d ms (%.3f s)\n", i + 1, tempos[i], tempoSegundos);
+            tempos[i] = fim - inicio;
+            System.out.printf("Execução %2d: %d ms (%.3f s)\n", i + 1, tempos[i], tempos[i] / 1000.0);
         }
 
         double media = calcularMedia(tempos);
         double desvioPadrao = calcularDesvioPadrao(tempos, media);
 
-        System.out.printf("\n📊 Resultados para vetor com %d elementos:\n", tamanho);
-        System.out.printf("Média de tempo: %.2f ms (%.3f s)\n", media, media / 1000.0);
-        System.out.printf("Desvio padrão: %.2f ms (%.3f s)\n", desvioPadrao, desvioPadrao / 1000.0);
+        System.out.printf("📊 Média: %.2f ms | Desvio Padrão: %.2f ms\n", media, desvioPadrao);
     }
 
     public static void main(String[] args) {
@@ -72,11 +84,15 @@ public class InsertionSortStats {
         int repeticoes = 10;
 
         for (int tamanho : tamanhos) {
-            System.out.println("=============================================");
+            System.out.println("\n===============================================");
+            System.out.printf("⚙️  Tamanho do vetor: %d\n", tamanho);
+
             if (tamanho > 100000) {
-                System.out.println("⚠️ AVISO: Vetor com " + tamanho + " elementos pode demorar MUITO. Aguarde...");
+                System.out.println("⚠️ AVISO: Pode demorar com Insertion Sort. Aguarde pacientemente...");
             }
-            testarComTamanho(tamanho, repeticoes);
+
+            testarCenario("aleatória", tamanho, repeticoes);
+            testarCenario("inversa", tamanho, repeticoes);
         }
     }
 }
