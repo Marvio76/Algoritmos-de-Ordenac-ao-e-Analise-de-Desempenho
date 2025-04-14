@@ -1,5 +1,3 @@
-
-
 import java.util.Random;
 
 public class QuickSortCompleto {
@@ -7,25 +5,39 @@ public class QuickSortCompleto {
     public static void quickSort(int[] array, int inicio, int fim) {
         if (inicio < fim) {
             int pivoIndex = particionar(array, inicio, fim);
-            quickSort(array, inicio, pivoIndex - 1);
-            quickSort(array, pivoIndex + 1, fim);
+
+            if (pivoIndex > inicio) {
+                quickSort(array, inicio, pivoIndex - 1);
+            }
+
+            if (pivoIndex < fim) {
+                quickSort(array, pivoIndex + 1, fim);
+            }
         }
     }
 
+    // ✅ Pivô aleatório para evitar recursão infinita
     public static int particionar(int[] array, int inicio, int fim) {
+        Random rand = new Random();
+        int pivoIndex = inicio + rand.nextInt(fim - inicio + 1);
+
+        int temp = array[pivoIndex];
+        array[pivoIndex] = array[fim];
+        array[fim] = temp;
+
         int pivo = array[fim];
         int i = inicio - 1;
 
         for (int j = inicio; j < fim; j++) {
             if (array[j] <= pivo) {
                 i++;
-                int temp = array[i];
+                temp = array[i];
                 array[i] = array[j];
                 array[j] = temp;
             }
         }
 
-        int temp = array[i + 1];
+        temp = array[i + 1];
         array[i + 1] = array[fim];
         array[fim] = temp;
 
